@@ -5,7 +5,7 @@ import { dirname } from 'path';
 import router from './router.js';
 
 const app = express();
-const PORT = process.env.PORT || 3070;
+const PORT = process.env.PORT || 8080;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
