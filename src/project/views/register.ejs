@@ -15,7 +15,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
-        <img src="path/to/your/logo.png" alt="Logo" width="100" height="auto" class="d-inline-block align-text-top">
+        <img src="imgs/logo.jpg" alt="Logo" width="100" height="auto" class="d-inline-block align-text-top">
       </a>
     </div>
   </nav>
@@ -26,7 +26,7 @@
       </h1>
 
       <div id="registerPage" class="page active form-container">
-        <form>
+        <form action="/register" method="post">
           <div class="mb-3">
             <label for="registerNameInput" class="form-label">Nome</label>
             <input type="text" class="form-control" id="registerNameInput" name="registerNameInput"
@@ -40,26 +40,27 @@
 
           <div class="mb-3">
             <label for="registerEmailInput" class="form-label">Email</label>
-            <input type="email" class="form-control" id="registerEmailInput" name="registerEmailInput"
+            <input type="email" class="form-control" id="registerEmailInput" name="username"
               placeholder="Digite seu email">
           </div>
           <div class="mb-3">
             <label for="registerPasswordInput" class="form-label">Senha</label>
-            <input type="password" class="form-control" id="registerPasswordInput" name="registerPasswordInput"
+            <input type="password" class="form-control" id="registerPasswordInput" name="password"
               placeholder="Digite sua senha">
           </div>
-          <button type="submit" class="btn btn-primary w-100 mb-3">Cadastrar</button>
-          <div class="text-center">
-            <a href="login.html" id="loginLink" class="text-decoration-none">Já possui uma conta? Faça login</a>
-          </div>
-        </form>
       </div>
+      <button type="submit" class="btn btn-primary w-100 mb-3">Cadastrar</button>
+      <div class="text-center">
+        <a href="login.html" id="loginLink" class="text-decoration-none">Já possui uma conta? Faça login</a>
+      </div>
+      </form>
     </div>
   </div>
- 
+  </div>
+
   <script src="js/scripts.js"></script>
   <script src="js/ripple.js"></script>
-  
+
 </body>
 
 </html>
