@@ -9,7 +9,7 @@ import router from './router.js';
 
 const app = express();
 
-const PORT = process.env.PORT || 443;
+const PORT = process.env.PORT || 80;
 
 
 const __filename = fileURLToPath(import.meta.url);
