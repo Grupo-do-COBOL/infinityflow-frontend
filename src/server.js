@@ -1,4 +1,7 @@
 import express from 'express';
+import session from 'express-session';
+import bodyParser from 'body-parser';
+import passport from 'passport';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
@@ -10,8 +13,13 @@ const PORT = process.env.PORT || 3070;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-app.use(express.static(path.join(__dirname, '.')));
-
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '..', 'views'));
+app.use(express.static('public'));
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(session({ secret: 'your-session-secret', resave: false, saveUninitialized: false }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use('/', router);
 
 app.listen(PORT, () => {
