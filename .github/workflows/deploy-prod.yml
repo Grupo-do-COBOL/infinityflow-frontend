@@ -12,6 +12,9 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+      
+    - name: Baixar Dependencias
+      run: npm install
         
     - name: Reload Daemon
       run: sudo systemctl daemon-reload
