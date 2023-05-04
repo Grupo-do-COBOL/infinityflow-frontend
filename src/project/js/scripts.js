@@ -1,4 +1,4 @@
-// Ouve o evento de envio do formulário de login
+//evento de envio do formulário de login
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
