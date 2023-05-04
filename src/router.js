@@ -3,13 +3,20 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import passport from 'passport';
 import bcrypt from 'bcrypt';
-import { isAuthenticated } from './auth.js';
-
+import { isAuthenticated } from './project/js/auth.js';
 
 const router = Router();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Rotas
+router.get('/', (req, res) => {
+  res.render('login');
+});
+
+router.get('/', isAuthenticated, (req, res) => {
+  res.redirect('/mainpage');
+});
+
 router.get('/login', (req, res) => {
   res.render('login');
 });

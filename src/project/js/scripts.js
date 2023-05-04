@@ -1,9 +1,16 @@
-//evento de envio do formulário de login
-const loginForm = document.getElementById("loginForm");
+// const loginForm = document.querySelector(".loginForm");
 
-if (loginForm) {
-  loginForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-    // Aqui vai o código que será executado ao enviar o formulário de login
-  });
-}
+// function inputs(e) {
+//   e.preventDefault();
+
+//   const email = loginForm.username.value;
+//   const pass = loginForm.password.value;
+
+//   const data = { email: email, senha: pass };
+
+//   console.log(data);
+// }
+
+// if (loginForm) {
+//   loginForm.addEventListener("submit", inputs);
+// }
