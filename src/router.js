@@ -10,6 +10,10 @@ const router = Router();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // Rotas
+router.get('/', (req, res) => {
+  res.render('login');
+});
+
 router.get('/login', (req, res) => {
   res.render('login');
 });
