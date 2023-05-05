@@ -24,11 +24,13 @@
     <div class="bg-white rounded p-4 shadow-lg" style="width: 400px;">
       <h1 class="text-center mb-4">
         <img src="path/to/your/circle-logo.png" alt="Infinity Flow Logo" width="100" height="100">
-      </h1>
-
-      <h1>Welcome, <%= user.username %>!</h1>
-      <p>This is the main page.</p>
-      <form action="/logout" method="post">
+        <h1 class="text-center mb-4">
+          Bem vindo Professor!
+        </h1>
+        <p class="text-center">
+          Sua aula o espera.
+        </p>
+      <form action="/login" method="post">
         <button type="submit"  class="btn btn-primary w-100 mb-3">Logout</button>
       </form>
     </div>

@@ -2,10 +2,13 @@ const express = require('express');
 const path = require('path');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
+const session = require('express-session');
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({
+  extended: false
+}));
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
 
@@ -21,12 +24,17 @@ app.use('/project/js', (req, res, next) => {
   next();
 });
 
-
 // Define o tipo MIME para arquivos de imagem
 app.use('/project/views/imgs', (req, res, next) => {
   res.type('image/png');
   next();
 });
+
+app.use(session({
+  secret: 'my-secret',
+  resave: false,
+  saveUninitialized: true
+}));
 
 async function authenticateUser(username, password) {
   try {
@@ -51,25 +59,41 @@ async function authenticateUser(username, password) {
   }
 }
 
+app.get('/register', (req, res) => {
+  res.render('register');
+});
+
 app.get('/login', (req, res) => {
   res.render('login');
 });
 
 app.post('/login', async (req, res) => {
-  const { email, senha } = req.body;
+  const {
+    email,
+    senha
+  } = req.body;
   console.log(email, senha);
   try {
     const authData = await authenticateUser(email, senha);
-    req.session.authData = authData;
+    req.session.authData = authData
     res.redirect('/mainpage');
   } catch (error) {
-    res.status(401).render('login', { errorMessage: 'Invalid username or password' });
+    res.status(401).render('login', {
+      errorMessage: 'Invalid username or password'
+    });
   }
 });
 
 app.get('/mainpage', (req, res) => {
-  res.send('Welcome to the main page!');
+  if (req.session.authData) {
+    res.render('mainpage', {
+      user: req.session.authData
+    });
+  } else {
+    res.redirect('/login');
+  }
 });
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
