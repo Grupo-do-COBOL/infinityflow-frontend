@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function () {
         fetch(`http://191.101.71.67:8080/api/v1/usuarios/buscar_por_email?email=${email}`, {
           headers: {
             'Authorization': `Bearer ${token}`
+            
           }
         })
           .then(response => response.json())
