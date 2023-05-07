@@ -12,21 +12,18 @@ app.use(express.urlencoded({
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
 
-// Define o tipo MIME para arquivos CSS
-app.use('/views/css', (req, res, next) => {
-  res.type('text/css');
-  next();
-});
 
-// Define o tipo MIME para arquivos JS
-app.use('/project/js', (req, res, next) => {
-  res.type('text/javascript');
-  next();
-});
-
-// Define o tipo MIME para arquivos de imagem
-app.use('/project/views/imgs', (req, res, next) => {
-  res.type('image/png');
+// Serve arquivos estáticos (CSS, JavaScript, imagens) e define o tipo MIME correto
+app.use('/static', express.static(path.join(__dirname, '..', 'views')), (req, res, next) => {
+  if (req.path.endsWith('.css')) {
+    res.type('text/css');
+  } else if (req.path.endsWith('.js')) {
+    res.type('text/javascript');
+  } else if (req.path.endsWith('.jpg') || req.path.endsWith('.jpeg')) {
+    res.type('image/jpg');
+  } else if (req.path.endsWith('.png')) {
+    res.type('image/png');
+  }
   next();
 });
 

@@ -1,27 +1,17 @@
-// const loginForm = document.getElementById("loginForm");
+document.addEventListener('DOMContentLoaded', function() {
+  const startClassBtn = document.getElementById('startClassBtn');
 
-// if (loginForm) {
-//   loginForm.addEventListener("submit", function (e) {
-//     e.preventDefault();
-//     const email = document.getElementById("email").value;
-//     const senha = document.getElementById("senha").value;
-
-//     fetch("/login", {
-//       method: "POST",
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       body: JSON.stringify({ email: email, senha: senha }),
-//     })
-//       .then((response) => {
-//         if (response.ok) {
-//           window.location.href = "/mainpage";
-//         } else {
-//           throw new Error("Falha na autenticação");
-//         }
-//       })
-//       .catch((error) => {
-//         console.error(error);
-//       });
-//   });
-// }
+  if (startClassBtn) {
+    startClassBtn.addEventListener('click', function() {
+      const selectedClass = document.querySelector('.form-select').value;
+      if (selectedClass !== "Escolha uma aula") {
+        const attendanceTab = document.getElementById('attendance-tab');
+        attendanceTab.classList.add('active');
+        const welcomeModal = bootstrap.Modal.getInstance(document.getElementById('welcomeModal'));
+        welcomeModal.hide();
+      } else {
+        alert('Por favor, selecione uma aula.');
+      }
+    });
+  }
+});
