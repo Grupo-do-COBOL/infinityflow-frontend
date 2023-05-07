@@ -10,23 +10,19 @@ h1 {
 .logo {
   margin-right: 10px;
   transition: all .5s;
-  border: 10px solid transparent;
-}
-
-.logo:hover {
-  border: 10px solid #136497;
+  border: 10px solid transparent ;
   border-radius: 50%;
 }
 
-/* .data-container {
-  transition: all .5s;
-  border: 10px solid transparent;
+.full-height {
+  min-height: calc(100vh - 56px - 48px); /* Descontando a altura da navbar e a altura da aba */
+  background-color: white;
+  padding: 1rem;
 }
 
-.data-container:hover {
-  border: 10px solid #136497;
-  border-radius: 50%;
-} */
+.tab-pane {
+  background-color: white;
+}
 
 
 .form-container {
