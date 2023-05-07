@@ -13,14 +13,19 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'project', 'views'));
 
 
-// Serve arquivos estáticos (CSS, JavaScript, imagens) e define o tipo MIME correto
-app.use('/static', express.static(path.join(__dirname, 'project', 'views')), (req, res, next) => {
+// Serve arquivos estáticos (CSS, JavaScript, imagens)
+app.use('/css', express.static(path.join(__dirname, 'project' , 'views', 'css')));
+app.use('/js', express.static(path.join(__dirname, 'project', 'js')));
+app.use('/imgs', express.static(path.join(__dirname, 'project', 'views', 'imgs')));
+
+// Define o tipo MIME correto
+app.use((req, res, next) => {
   if (req.path.endsWith('.css')) {
     res.type('text/css');
   } else if (req.path.endsWith('.js')) {
     res.type('text/javascript');
   } else if (req.path.endsWith('.jpg') || req.path.endsWith('.jpeg')) {
-    res.type('image/jpg');
+    res.type('image/jpeg');
   } else if (req.path.endsWith('.png')) {
     res.type('image/png');
   }
@@ -33,28 +38,6 @@ app.use(session({
   saveUninitialized: true
 }));
 
-async function authenticateUser(username, password) {
-  try {
-    const response = await axios.post('http://191.101.71.67:8080/api/v1/login/autenticacao', {
-      email: username,
-      senha: password,
-    });
-    console.log(response)
-    if (response.status === 200 && response.data.token) {
-      return response.data;
-    } else {
-      throw new Error('Authentication failed');
-    }
-  } catch (error) {
-    console.error('Error during authentication:', error);
-
-    if (error.response && error.response.status === 401) {
-      throw new Error('Invalid username or password');
-    } else {
-      throw new Error('Authentication failed');
-    }
-  }
-}
 
 app.get('/', (req, res) => {
   res.render('login');
