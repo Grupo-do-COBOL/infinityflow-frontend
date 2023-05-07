@@ -10,11 +10,11 @@ app.use(express.urlencoded({
   extended: false
 }));
 app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '..', 'views'));
+app.set('views', path.join(__dirname, 'project', 'views'));
 
 
 // Serve arquivos estáticos (CSS, JavaScript, imagens) e define o tipo MIME correto
-app.use('/static', express.static(path.join(__dirname, '..', 'views')), (req, res, next) => {
+app.use('/static', express.static(path.join(__dirname, 'project', 'views')), (req, res, next) => {
   if (req.path.endsWith('.css')) {
     res.type('text/css');
   } else if (req.path.endsWith('.js')) {
