@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const session = require('express-session');
 const app = express();
+const { LocalStorage } = require('node-localstorage');
+const localStorage = new LocalStorage('./localStorage');
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -14,18 +16,20 @@ app.set('views', path.join(__dirname, 'project', 'views'));
 
 
 // Serve arquivos estáticos (CSS, JavaScript, imagens) e define o tipo MIME correto
-app.use('/static', express.static(path.join(__dirname, 'project', 'views')), (req, res, next) => {
-  if (req.path.endsWith('.css')) {
-    res.type('text/css');
-  } else if (req.path.endsWith('.js')) {
-    res.type('text/javascript');
-  } else if (req.path.endsWith('.jpg') || req.path.endsWith('.jpeg')) {
-    res.type('image/jpg');
-  } else if (req.path.endsWith('.png')) {
-    res.type('image/png');
+app.use('/static', express.static(path.join(__dirname, 'project', 'views'), {
+  setHeaders: (res, path) => {
+    if (path.endsWith('.css')) {
+      res.setHeader('Content-Type', 'text/css');
+    } else if (path.endsWith('.js')) {
+      res.setHeader('Content-Type', 'text/javascript');
+    } else if (path.endsWith('.jpg') || path.endsWith('.jpeg')) {
+      res.setHeader('Content-Type', 'image/jpeg');
+    } else if (path.endsWith('.png')) {
+      res.setHeader('Content-Type', 'image/png');
+    }
   }
-  next();
-});
+}));
+
 
 app.use(session({
   secret: 'my-secret',
@@ -39,8 +43,10 @@ async function authenticateUser(username, password) {
       email: username,
       senha: password,
     });
-    console.log(response)
+
     if (response.status === 200 && response.data.token) {
+      localStorage.setItem('token', response.data.token);
+      console.log("token app.cjs: " + response.data.token)
       return response.data;
     } else {
       throw new Error('Authentication failed');
@@ -73,7 +79,8 @@ app.post('/login', async (req, res) => {
     email,
     senha
   } = req.body;
-  console.log(email, senha);
+  localStorage.setItem('email', email);
+  console.log("email app.cjs: " + email);
   try {
     const authData = await authenticateUser(email, senha);
     req.session.authData = authData
