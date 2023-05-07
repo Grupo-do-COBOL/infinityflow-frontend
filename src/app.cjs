@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const session = require('express-session');
 const app = express();
+const { LocalStorage } = require('node-localstorage');
+const localStorage = new LocalStorage('./localStorage');
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -13,19 +15,24 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'project', 'views'));
 
 
-// Serve arquivos estáticos (CSS, JavaScript, imagens) e define o tipo MIME correto
-app.use('/static', express.static(path.join(__dirname, 'project', 'views')), (req, res, next) => {
+// Serve arquivos estáticos (CSS, JavaScript, imagens)
+app.use('/css', express.static(path.join(__dirname, 'project' , 'views', 'css')));
+app.use('/js', express.static(path.join(__dirname, 'project', 'js')));
+app.use('/imgs', express.static(path.join(__dirname, 'project', 'views', 'imgs')));
+
+// Define o tipo MIME correto
+app.use((req, res, next) => {
   if (req.path.endsWith('.css')) {
     res.type('text/css');
   } else if (req.path.endsWith('.js')) {
     res.type('text/javascript');
   } else if (req.path.endsWith('.jpg') || req.path.endsWith('.jpeg')) {
-    res.type('image/jpg');
+    res.type('image/jpeg');
   } else if (req.path.endsWith('.png')) {
     res.type('image/png');
   }
-  next();
 });
+
 
 app.use(session({
   secret: 'my-secret',
@@ -33,28 +40,6 @@ app.use(session({
   saveUninitialized: true
 }));
 
-async function authenticateUser(username, password) {
-  try {
-    const response = await axios.post('http://191.101.71.67:8080/api/v1/login/autenticacao', {
-      email: username,
-      senha: password,
-    });
-    console.log(response)
-    if (response.status === 200 && response.data.token) {
-      return response.data;
-    } else {
-      throw new Error('Authentication failed');
-    }
-  } catch (error) {
-    console.error('Error during authentication:', error);
-
-    if (error.response && error.response.status === 401) {
-      throw new Error('Invalid username or password');
-    } else {
-      throw new Error('Authentication failed');
-    }
-  }
-}
 
 app.get('/', (req, res) => {
   res.render('login');
@@ -73,7 +58,8 @@ app.post('/login', async (req, res) => {
     email,
     senha
   } = req.body;
-  console.log(email, senha);
+  localStorage.setItem('email', email);
+  console.log("email app.cjs: " + email);
   try {
     const authData = await authenticateUser(email, senha);
     req.session.authData = authData
