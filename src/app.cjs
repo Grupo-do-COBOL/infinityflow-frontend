@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const session = require('express-session');
 const app = express();
+const { LocalStorage } = require('node-localstorage');
+const localStorage = new LocalStorage('./localStorage');
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -29,8 +31,8 @@ app.use((req, res, next) => {
   } else if (req.path.endsWith('.png')) {
     res.type('image/png');
   }
-  next();
 });
+
 
 app.use(session({
   secret: 'my-secret',
@@ -56,7 +58,8 @@ app.post('/login', async (req, res) => {
     email,
     senha
   } = req.body;
-  console.log(email, senha);
+  localStorage.setItem('email', email);
+  console.log("email app.cjs: " + email);
   try {
     const authData = await authenticateUser(email, senha);
     req.session.authData = authData
