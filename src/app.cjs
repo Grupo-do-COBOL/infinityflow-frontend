@@ -4,8 +4,11 @@ const bcrypt = require('bcrypt');
 const axios = require('axios');
 const session = require('express-session');
 const app = express();
-const { LocalStorage } = require('node-localstorage');
+const {
+  LocalStorage
+} = require('node-localstorage');
 const localStorage = new LocalStorage('./localStorage');
+
 
 app.use(express.json());
 app.use(express.urlencoded({
@@ -14,28 +17,30 @@ app.use(express.urlencoded({
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'project', 'views'));
 
-
-// Serve arquivos estáticos (CSS, JavaScript, imagens) e define o tipo MIME correto
-app.use('/static', express.static(path.join(__dirname, 'project', 'views'), {
-  setHeaders: (res, path) => {
-    if (path.endsWith('.css')) {
-      res.setHeader('Content-Type', 'text/css');
-    } else if (path.endsWith('.js')) {
-      res.setHeader('Content-Type', 'text/javascript');
-    } else if (path.endsWith('.jpg') || path.endsWith('.jpeg')) {
-      res.setHeader('Content-Type', 'image/jpeg');
-    } else if (path.endsWith('.png')) {
-      res.setHeader('Content-Type', 'image/png');
-    }
+app.use((req, res, next) => {
+  if (req.path.endsWith('.css')) {
+    res.type('text/css');
+  } else if (req.path.endsWith('.js')) {
+    res.type('text/javascript');
+  } else if (req.path.endsWith('.jpg') || req.path.endsWith('.jpeg')) {
+    res.type('image/jpeg');
+  } else if (req.path.endsWith('.png')) {
+    res.type('image/png');
   }
-}));
+  next();
+});
 
+app.use('/css', express.static(path.join(__dirname, 'project', 'views', 'css')));
+app.use('/js', express.static(path.join(__dirname, 'project', 'js')));
+app.use('/imgs', express.static(path.join(__dirname, 'project', 'views', 'imgs')));
 
 app.use(session({
   secret: 'my-secret',
   resave: false,
   saveUninitialized: true
 }));
+
+
 
 async function authenticateUser(username, password) {
   try {
@@ -45,8 +50,9 @@ async function authenticateUser(username, password) {
     });
 
     if (response.status === 200 && response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      console.log("token app.cjs: " + response.data.token)
+      token = response.data.token;
+
+      
       return response.data;
     } else {
       throw new Error('Authentication failed');
@@ -61,6 +67,7 @@ async function authenticateUser(username, password) {
     }
   }
 }
+
 
 app.get('/', (req, res) => {
   res.render('login');
@@ -83,7 +90,7 @@ app.post('/login', async (req, res) => {
   console.log("email app.cjs: " + email);
   try {
     const authData = await authenticateUser(email, senha);
-    req.session.authData = authData
+    req.session.authData = authData;
     res.redirect('/mainpage');
   } catch (error) {
     res.status(401).render('login', {
@@ -102,6 +109,10 @@ app.get('/mainpage', (req, res) => {
   }
 });
 
+app.post('/logout', (req, res) => {
+  req.session.destroy();
+  res.redirect('/login');
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
