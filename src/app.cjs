@@ -52,7 +52,7 @@ async function authenticateUser(username, password) {
     if (response.status === 200 && response.data.token) {
       token = response.data.token;
 
-      
+
       return response.data;
     } else {
       throw new Error('Authentication failed');
@@ -91,6 +91,9 @@ app.post('/login', async (req, res) => {
   try {
     const authData = await authenticateUser(email, senha);
     req.session.authData = authData;
+
+    localStorage.setItem('token', authData.token);
+
     res.redirect('/mainpage');
   } catch (error) {
     res.status(401).render('login', {
@@ -102,7 +105,9 @@ app.post('/login', async (req, res) => {
 app.get('/mainpage', (req, res) => {
   if (req.session.authData) {
     res.render('mainpage', {
-      user: req.session.authData
+      user: req.session.authData,
+      email: req.session.authData.email, // Adicione esta linha
+      token: req.session.authData.token, // Adicione esta linha
     });
   } else {
     res.redirect('/login');

@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', function () {
   // Initialize the welcomeModal
   var welcomeModal = new bootstrap.Modal(document.getElementById('welcomeModal'));
@@ -28,7 +27,9 @@ document.addEventListener('DOMContentLoaded', function () {
   async function fetchUserData() {
     const email = localStorage.getItem('email');
     const token = localStorage.getItem('token');
-
+  
+    console.log('Email e token obtidos do localStorage:', email, token); // Adicione esta linha
+  
     if (email && token) {
       try {
         const response = await fetch(`http://191.101.71.67:8080/api/v1/usuarios/buscar_por_email?email=${email}`, {
@@ -36,12 +37,15 @@ document.addEventListener('DOMContentLoaded', function () {
             'Authorization': `Bearer ${token}`,
           },
         });
-
+  
+        console.log('Resposta da API:', response); // Adicione esta linha
+  
         if (response.ok) {
           const data = await response.json();
+          console.log('Dados da API:', data); // Adicione esta linha
           document.getElementById('welcomeModalLabel').innerHTML = 'Bem-vindo, ' + data.nome_usuario + '!';
           localStorage.setItem('ProfessorID', data.professor_id);
-          console.log(email, token, data.professor_id);
+          console.log('ID do professor salvo no localStorage:', data.professor_id);
         } else {
           throw new Error('Error fetching user name');
         }
@@ -49,13 +53,10 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('Error during fetching user name:', error);
       }
     }
-
-    const idProfessor = localStorage.getItem('ProfessorID');
-    console.log('Token:', token);
-    console.log('IdProfessor:', idProfessor);
+  
     fetchAulas();
   }
-
+  
   function fetchAulas() {
     const aulaSelect = document.getElementById('aulaSelect');
     const IdProfessor = localStorage.getItem('ProfessorID');
