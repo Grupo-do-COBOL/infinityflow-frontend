@@ -44,7 +44,6 @@ function populateAulaSelect() {
         id_aula: selectedAulaId
       })
       .then(function (response) {
-        // Adicione esta lógica
         // Limpa a tabela de alunos atual
         const tableBody = document.querySelector('#attendance tbody');
         tableBody.innerHTML = '';
@@ -105,19 +104,19 @@ document.getElementById("registrarPresenca").addEventListener('click', function 
   const selectedAulaId = document.getElementById('aulaSelect').value;
 
   // Agora, faça a solicitação POST com a lista completa de presenças
-  axios.post('http://191.101.71.67:8080/sistema/v1/registrar_presencas', {
+  axios.post('/registraPresenca', {
       id_aula: selectedAulaId,
       lista_presencas: lista_presencas
   })
-  .then(function (response) {
+
+  .then(function () {
       // Manipule a resposta aqui, se necessário
-      console.log(response.data);
       alert('Presenças registradas com sucesso!');
   })
   .catch(function (error) {
       // Manipule o erro aqui, se necessário
       console.log(error);
-      alert('Presenças registradas com sucesso!');
+      alert('Erro ao registrar presenças!');
   });
 });
 

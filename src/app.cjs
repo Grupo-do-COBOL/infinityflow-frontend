@@ -255,7 +255,7 @@ app.post('/setSelectedAula', async (req, res) => {
   }
 });
 
-app.post('/sistema/v1/registrar_presencas', async (req, res) => {
+app.post('/registraPresenca', async (req, res) => {
   if (!req.session.authData) {
     res.sendStatus(401); // Unauthorized
     return;
@@ -266,18 +266,39 @@ app.post('/sistema/v1/registrar_presencas', async (req, res) => {
   // Extrair os dados do corpo da requisição
   const { id_aula, lista_presencas } = req.body;
 
-  // Aqui, você irá processar os dados recebidos, como registrá-los em um banco de dados
- 
+  if (!id_aula || !lista_presencas || lista_presencas.length === 0) {
+    res.status(400).json({ message: 'id_aula ou lista_presencas inválidos!' });
+    return;
+  }
 
-  // Por exemplo, você pode querer iterar sobre lista_presencas e registrar cada presença
-  lista_presencas.forEach(presenca => {
-    console.log(`Registrando presença para o aluno ${presenca.id_aluno} na aula ${id_aula}. Situação: ${presenca.situacao}`);
-    // ... adicione aqui o código para registrar a presença no banco de dados
-  });
+  try {
+    // Fazendo uma requisição POST para o endpoint remoto
+    const response = await axios.post('http://191.101.71.67:8080/sistema/v1/registrar_presencas', {
+      id_aula,
+      lista_presencas,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    });
 
-  // Em seguida, responda à solicitação para informar ao cliente que ela foi bem-sucedida
-  res.status(200).json({ message: `Presença dos alunos registrada com sucesso para a aula ${id_aula}.` });
+    console.log('Status da resposta:', response.status);
+
+
+    // Verifique o objeto de resposta para determinar se a requisição foi bem-sucedida
+    if (response.status === 201) {
+      res.status(201).json({ message: 'Presenças registradas com sucesso!' });
+    } else {
+      // Manipule a resposta aqui, se necessário
+      res.status(500).json({ message: 'Erro ao registrar presenças!' });
+    }
+  } catch (error) {
+    // Manipule o erro aqui, se necessário
+    console.error(error);
+    res.status(500).json({ message: 'Erro ao registrar presenças!' });
+  }
 });
+
 
 
 
