@@ -50,33 +50,30 @@
     </div>
   </div>
 
-  <!-- Abas -->
-  <div class="tabs" style="display: none;">
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link fw-bold text-dark" id="alunos-tab" data-bs-toggle="pill" data-bs-target="#alunos" type="button"
-          role="tab" aria-controls="alunos" aria-selected="true">Alunos</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link fw-bold text-dark" id="professores-tab" data-bs-toggle="pill" data-bs-target="#professores" type="button"
-          role="tab" aria-controls="professores" aria-selected="false">Professores</button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link fw-bold text-dark" id="materias-tab" data-bs-toggle="pill" data-bs-target="#materias" type="button"
-          role="tab" aria-controls="materias" aria-selected="false">Matérias</button>
-      </li>
-    </ul>
-    <div class="tab-content" id="pills-tabContent">
-      <div class="tab-pane fade show active" id="alunos" role="tabpanel" aria-labelledby="alunos-tab">
-        Conteúdo paraAlunos
-      </div>
-      <div class="tab-pane fade" id="professores" role="tabpanel" aria-labelledby="professores-tab">
-        Conteúdo para Professores
-      </div>
-      <div class="tab-pane fade" id="materias" role="tabpanel" aria-labelledby="materias-tab">
-        Conteúdo para Matérias
-      </div>
+  <!-- Relatório -->
+  <div class="tabs bg-white p-3" style="display: none;">
+    <h3 class="text-center">Relatório de Faltas</h3>
+    <table class="text-center table table-bordered table-hover mt-4" id="attendance">
+      <thead>
+        <tr>
+          <th>Nome do Aluno</th>
+          <th>Ano Letivo</th>
+          <th>Bimestre</th>
+          <th>Período</th>
+          <th>Turma</th>
+          <th>Disciplina</th>
+          <th>Presença(s)</th>
+          <th>Falta(s)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Lista do relatório-->
+      </tbody>
+    </table>
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary" id="printReport">Emitir Relatório</button>
     </div>
+  </div>
   </div>
 
 
@@ -110,8 +107,7 @@
           <div class="d-flex justify-content-between mt-3" style="max-width: 300px; margin: auto;">
             <button type="button" class="text-center btn btn-primary" data-bs-dismiss="modal"
               id="openWelcomeModal">Iniciar Aula</button>
-            <button type="button" class="text-center btn btn-primary" data-bs-dismiss="modal" id="openReports">Emitir
-              Relatórios</button>
+            <button type="button" class="text-center btn btn-primary" data-bs-dismiss="modal" id="openReports">Gerar Relatório</button>
           </div>
         </div>
       </div>

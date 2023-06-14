@@ -29,6 +29,10 @@ h1 {
   padding: 1rem;
 }
 
+.loginForm {
+  margin-top: 6%;
+  margin-bottom: 6%;
+}
 
 .form-container {
   border-radius: 10px;
