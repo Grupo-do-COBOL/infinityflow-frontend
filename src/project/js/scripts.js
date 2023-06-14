@@ -160,17 +160,25 @@ function showWelcomeModal() {
 }
 
 
-// Adiciona eventos de clique para o botão para redirecionar para a mainpage e gerar relatórios.
+// Adiciona eventos de clique para o botão para exibir as abas
 document.getElementById('openReports').addEventListener('click', function () {
+  // Pega a div que contém as abas e a seção de presença
+  const tabs = document.querySelector('.tabs');
+  const attendanceSection = document.querySelector('.attendance-section');
 
-  localStorage.setItem('isRedirectedFromModal', 'true');
-  localStorage.setItem('optionModalShown', 'true');
-  $('#optionModal').modal('hide');
-  // Redirecionar para a página de relatórios
-  window.location.href = "/mainpage";
-
+  // Verifica se as abas estão escondidas
+  if (tabs.style.display === 'none') {
+    // Se estão escondidas, mostra as abas e esconde a seção de presença
+    tabs.style.display = 'block';
+    attendanceSection.style.display = 'none';
+  } else {
+    // Se não estão escondidas, esconde as abas e mostra a seção de presença
+    tabs.style.display = 'none';
+    attendanceSection.style.display = 'block';
+  }
 
 });
+
 
 // Chama a função showOptionModal quando o DOM estiver carregado para abrir a modal com o que o professor gostaria de fazer 
 document.addEventListener('DOMContentLoaded', showOptionModal);

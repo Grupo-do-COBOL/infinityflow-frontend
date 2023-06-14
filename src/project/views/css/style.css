@@ -16,12 +16,8 @@ h1 {
 
 .full-height {
   min-height: calc(100vh - 56px - 48px); /* Descontando a altura da navbar e a altura da aba */
-  background-color: white;
+  background-color: rgb(110, 110, 110);
   padding: 1rem;
-}
-
-.tab-pane {
-  background-color: white;
 }
 
 
