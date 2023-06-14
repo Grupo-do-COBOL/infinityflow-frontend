@@ -17,8 +17,7 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-gray" role="navigation">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
-        <img src="/imgs/logo.png" class="img-responsive"alt="Logo" class="logo" width="200" height="auto"
-          class="d-inline-block align-text-top">
+        <img src="/imgs/logo.png" class="img-responsive"alt="Logo" class="logo" width="200" class="d-inline-block align-text-top">
       </a>
       <div class="collapse navbar-collapse">
         <ul class="navbar-nav ms-auto">
@@ -127,7 +126,7 @@
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="/js/scripts.js"></script>
   <script id="userAndAulasData" type="application/json">
-    < % -JSON.stringify({userInfo: userInfo, aulas: aulas}) % >
+    <%- JSON.stringify({userInfo: userInfo, aulas: aulas}) %>
   </script>
 
 
