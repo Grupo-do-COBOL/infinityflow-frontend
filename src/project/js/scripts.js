@@ -107,17 +107,17 @@ document.getElementById("registrarPresenca").addEventListener('click', function 
   axios.post('/registraPresenca', {
       id_aula: selectedAulaId,
       lista_presencas: lista_presencas
-  })
+    })
 
-  .then(function () {
+    .then(function () {
       // Manipule a resposta aqui, se necessário
       alert('Presenças registradas com sucesso!');
-  })
-  .catch(function (error) {
+    })
+    .catch(function (error) {
       // Manipule o erro aqui, se necessário
       console.log(error);
       alert('Erro ao registrar presenças!');
-  });
+    });
 });
 
 
@@ -159,18 +159,123 @@ function showWelcomeModal() {
   welcomeModal.show();
 }
 
+function loadAttendanceReport(dataInicial, dataFinal, aluno, disciplina) {
+  $.get('/attendance_report', {
+    dataInicial,
+    dataFinal,
+    aluno,
+    disciplina
+  }, function (data) {
+    // Limpa a tabela antes de adicionar novos dados
+    $('#attendance-report tbody').empty();
 
-// Adiciona eventos de clique para o botão para redirecionar para a mainpage e gerar relatórios.
+    // Itera sobre cada item nos dados retornados
+    $.each(data, function (i, item) {
+      // Adiciona uma nova linha na tabela para cada item
+      $('#attendance-report tbody').append(`
+        <tr>
+          <td>${item.nome_aluno}</td>
+          <td>${item.bimestre}</td>
+          <td>${item.periodo}</td>
+          <td>${item.turma}</td>
+          <td>${item.disciplina}</td>
+          <td>${item.presencas}</td>
+          <td>${item.faltas}</td>
+        </tr>
+      `);
+    });
+  });
+}
+
+
+
+// Adiciona eventos de clique para o botão para exibir o modal de seleção de datas
 document.getElementById('openReports').addEventListener('click', function () {
-
-  localStorage.setItem('isRedirectedFromModal', 'true');
-  localStorage.setItem('optionModalShown', 'true');
-  $('#optionModal').modal('hide');
-  // Redirecionar para a página de relatórios
-  window.location.href = "/mainpage";
-
-
+  // Abre o modal para seleção de datas
+  const dateSelectionModal = new bootstrap.Modal(document.getElementById('dateSelectionModal'));
+  dateSelectionModal.show();
 });
+
+document.getElementById('backButton').addEventListener('click', function () {
+  $('#dateSelectionModal').modal('hide');
+  $('#optionModal').modal('show');
+});
+
+// Adiciona eventos de clique para o botão para confirmar a seleção de datas
+document.getElementById('confirmDateSelection').addEventListener('click', function () {
+  // Validação das datas
+  let dataInicial = document.getElementById('dataInicialSelection').value;
+  let dataFinal = document.getElementById('dataFinalSelection').value;
+
+  if (dataInicial && dataFinal) {
+    const dataInicialMoment = moment(dataInicial, 'YYYY-MM-DD');
+    const dataFinalMoment = moment(dataFinal, 'YYYY-MM-DD');
+
+    if (dataFinalMoment.isBefore(dataInicialMoment)) {
+      alert('Data final não pode ser antes da data inicial');
+      return;
+    }
+
+    // Formata as datas no formato necessário antes de passar para a função
+    dataInicial = dataInicialMoment.format('YYYY/MM/DD');
+    dataFinal = dataFinalMoment.format('YYYY/MM/DD');
+
+    const tabs = document.querySelector('.tabs');
+    const attendanceSection = document.querySelector('.attendance-section');
+
+    // Verifica se as abas estão escondidas
+    if (tabs.style.display === 'none') {
+      // Se estão escondidas, mostra as abas e esconde a seção de presença
+      tabs.style.display = 'block';
+      attendanceSection.style.display = 'none';
+
+      // Carrega os dados do relatório de presença apenas quando o botão é clicado
+      loadAttendanceReport(dataInicial, dataFinal);
+    } else {
+      // Se não estão escondidas, esconde as abas e mostra a seção de presença
+      tabs.style.display = 'none';
+      attendanceSection.style.display = 'block';
+    }
+  } else {
+    alert('Não há relatórios para exibir nesta data');
+  }
+});
+
+// Evento de clique para o botão "Filtrar"
+document.getElementById('filtraRelatorio').addEventListener('click', function (event) {
+  // Previne o comportamento padrão do formulário
+  event.preventDefault();
+
+  // Validação das datas
+  let dataInicial = document.getElementById('dataInicial').value;
+  let dataFinal = document.getElementById('dataFinal').value;
+  let aluno = document.getElementById('searchStudent').value;
+  let disciplina = document.getElementById('subjectFilter').value;
+
+  console.log(dataInicial, dataFinal, aluno, disciplina)
+
+  if (dataInicial && dataFinal) {
+    const dataInicialMoment = moment(dataInicial, 'YYYY-MM-DD');
+    const dataFinalMoment = moment(dataFinal, 'YYYY-MM-DD');
+
+    if (dataFinalMoment.isBefore(dataInicialMoment)) {
+      alert('Data final não pode ser antes da data inicial');
+      return;
+    }
+
+    // Formata as datas no formato necessário antes de passar para a função
+    dataInicial = dataInicialMoment.format('YYYY/MM/DD');
+    dataFinal = dataFinalMoment.format('YYYY/MM/DD');
+
+    // Aqui você pode chamar a função que irá filtrar o relatório de faltas
+    loadAttendanceReport(dataInicial, dataFinal, aluno, disciplina);
+  } else {
+    alert('Por favor, selecione as datas inicial e final');
+  }
+});
+
+
+
 
 // Chama a função showOptionModal quando o DOM estiver carregado para abrir a modal com o que o professor gostaria de fazer 
 document.addEventListener('DOMContentLoaded', showOptionModal);

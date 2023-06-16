@@ -14,10 +14,10 @@
 </head>
 
 <body class="bg-secondary">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-light bg-gray" role="navigation">
     <div class="container-fluid">
       <a class="navbar-brand" href="#">
-        <img src="/imgs/logo.jpg" alt="Logo" class="logo" width="200" height="auto"
+        <img src="/imgs/logo.png" class="img-responsive" alt="Logo" class="logo" width="200"
           class="d-inline-block align-text-top">
       </a>
       <div class="collapse navbar-collapse">
@@ -32,31 +32,83 @@
     </div>
   </nav>
 
-  <ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <a class="nav-link" id="attendance-tab" data-bs-toggle="tab" href="#attendance" role="tab"
-        aria-controls="attendance">Lista de Presença</a>
-    </li>
-  </ul>
-  <div class="tab-content full-height" id="myTabContent">
-    <div class="tab-pane show bg-white p-3" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">
-      <table class="text-center table table-bordered table-hover mt-4" id="attendance">
-        <thead>
-          <tr>
-            <th>Nome do Aluno</th>
-            <th>Presença</th>
-          </tr>
-        </thead>
-        <tbody>
-          <!-- Lista de alunos da aula -->
-        </tbody>
-      </table>
-      <div class="text-center">
-        <button type="submit" class="btn btn-primary" id="registrarPresenca">Enviar Lista de Presença</button>
-      </div>
+
+  <div class="bg-white p-3 attendance-section">
+    <h3 class="text-center">Lista de Presença</h3>
+    <table class="text-center table table-bordered table-hover mt-4" id="attendance">
+      <thead>
+        <tr>
+          <th>Nome do Aluno</th>
+          <th>Presença</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Lista de alunos da aula -->
+      </tbody>
+    </table>
+    <div class="text-center">
+      <button type="submit" class="btn btn-primary" id="registrarPresenca">Enviar Lista de Presença</button>
     </div>
   </div>
+
+  <!-- Relatório -->
+  <div class="tabs bg-white p-3" style="display: none;">
+    <div class="my-4">
+      <h5>Filtros:</h5>
+      <form class="row gy-3 g-3">
+        <div class="col-sm-6 col-md-4 col-lg-2">
+          <label for="searchStudent">Nome do Aluno:</label>
+          <input type="text" id="searchStudent" placeholder="Nome do Aluno" class="form-control">
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-15">
+          <label for="subjectFilter">Disciplina:</label>
+          <select id="subjectFilter" class="form-control">
+            <option value="">Selecione uma disciplina</option>
+            <option value="Português">Português</option>
+            <option value="Matemática">Matemática</option>
+            <option value="História">História</option>
+            <option value="Geografia">Geografia</option>
+            <option value="Ciências">Ciências</option>
+            <option value="Inglês">Inglês</option>
+            <option value="Artes">Artes</option>
+            <option value="Educação Física">Educação Física</option>
+          </select>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-15">
+          <label for="dataInicial">Data Inicial:</label>
+          <input type="date" id="dataInicial" class="form-control">
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-15">
+          <label for="dataFinal">Data Final:</label>
+          <input type="date" id="dataFinal" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary" id="filtraRelatorio">Filtrar</button>
+      </form>
+    </div>
+
+    <!-- Tabela -->
+    <h3 class="text-center">Relatório de Faltas</h3>
+    <table class="text-center table table-bordered table-hover" id="attendance-report">
+      <thead>
+        <tr>
+          <th>Nome do Aluno</th>
+          <th>Bimestre</th>
+          <th>Período</th>
+          <th>Turma</th>
+          <th>Disciplina</th>
+          <th>Presença(s)</th>
+          <th>Falta(s)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Lista do relatório -->
+      </tbody>
+    </table>
+
   </div>
+  </div>
+
+
 
 
   <!-- Modal -->
@@ -64,7 +116,7 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-body text-center">
-          <img src="/imgs/logo.jpg" alt="Logo" class="logo mb-3" width="300" height="auto">
+          <img src="/imgs/logo.png" class="img-responsive" alt="Logo" class="logo mb-3" width="300" height="auto">
           <h5 class="modal-title mb-4" id="welcomeModalLabel"></h5>
           <h6>Selecione a aula que irá ministrar:</h6>
           <select id="aulaSelect" class="form-select mb-3" aria-label="Selecione a aula">
@@ -82,29 +134,56 @@
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-body text-center">
-          <img src="/imgs/logo.jpg" alt="Logo" class="logo mb-3" width="300" height="auto">
+          <img src="/imgs/logo.png" class="img-responsive" alt="Logo" class="logo mb-3" width="300" height="auto">
           <h5 class="modal-title mb-4" id="optionModalLabel"></h5>
           <h>O que voce gostaria de fazer:</h>
-          <div class="d-flex justify-content-between mt-3" style="max-width: 300px; margin: auto;"> 
-            <button type="button" class="text-center btn btn-primary" data-bs-dismiss="modal" id="openWelcomeModal">Iniciar Aula</button>
-            <button type="button" class="text-center btn btn-primary" data-bs-dismiss="modal" id="openReports">Emitir Relatórios</button>
-        </div>
+          <div class="d-flex justify-content-between mt-3" style="max-width: 300px; margin: auto;">
+            <button type="button" class="text-center btn btn-primary" data-bs-dismiss="modal"
+              id="openWelcomeModal">Iniciar Aula</button>
+            <button type="button" class="text-center btn btn-primary" data-bs-dismiss="modal" id="openReports">Gerar
+              Relatório</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Modal para Seleção de Datas -->
+<div class="modal fade" id="dateSelectionModal" tabindex="-1" aria-labelledby="dateSelectionModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-body">
+        <h5 class="modal-title mb-4" id="dateSelectionModalLabel">Selecione as Datas que deseja filtrar:</h5>
+        <div class="mb-3">
+          <label for="dataInicialSelection" class="form-label">Data Inicial:</label>
+          <input type="date" class="form-control" id="dataInicialSelection">
+        </div>
+        <div class="mb-3">
+          <label for="dataFinalSelection" class="form-label">Data Final:</label>
+          <input type="date" class="form-control" id="dataFinalSelection">
+        </div>
+        <div class="d-flex justify-content-around">
+          <button type="button" class="btn btn-secondary" id="backButton">Voltar</button>
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="confirmDateSelection">Confirmar</button>
+        </div>
+      </div>      
+    </div>
+  </div>
+</div>
+
 
 
 
 
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   <script src="/js/scripts.js"></script>
   <script id="userAndAulasData" type="application/json">
     <%- JSON.stringify({userInfo: userInfo, aulas: aulas}) %>
   </script>
-  
+
 
 
 </body>
