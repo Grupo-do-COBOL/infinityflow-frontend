@@ -124,7 +124,7 @@ async function getAlunosList(token, id_aula) {
   }
 }
 
-async function getAttendanceReport(token, dataInicial, dataFinal) {
+async function getAttendanceReport(token, dataInicial, dataFinal, aluno, disciplina) {
   try {
     const response = await axios.get('http://191.101.71.67:8080/sistema/v1/gerar_relatorios', {
       headers: {
@@ -132,7 +132,9 @@ async function getAttendanceReport(token, dataInicial, dataFinal) {
       },
       params: {
         dataInicial,
-        dataFinal
+        dataFinal,
+        aluno,
+        disciplina
       },
     });
 
@@ -158,11 +160,13 @@ app.get('/attendance_report', async (req, res) => {
     } = req.session.authData;
     const {
       dataInicial,
-      dataFinal
+      dataFinal,
+      aluno,
+      disciplina
     } = req.query;
 
     try {
-      const reportData = await getAttendanceReport(token, dataInicial, dataFinal);
+      const reportData = await getAttendanceReport(token, dataInicial, dataFinal, aluno, disciplina);
       res.json(reportData);
     } catch (error) {
       console.error('Erro ao buscar relatório de presença:', error);

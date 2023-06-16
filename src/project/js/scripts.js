@@ -159,10 +159,12 @@ function showWelcomeModal() {
   welcomeModal.show();
 }
 
-function loadAttendanceReport(dataInicial, dataFinal) {
+function loadAttendanceReport(dataInicial, dataFinal, aluno, disciplina) {
   $.get('/attendance_report', {
     dataInicial,
-    dataFinal
+    dataFinal,
+    aluno,
+    disciplina
   }, function (data) {
     // Limpa a tabela antes de adicionar novos dados
     $('#attendance-report tbody').empty();
@@ -247,6 +249,10 @@ document.getElementById('filtraRelatorio').addEventListener('click', function (e
   // Validação das datas
   let dataInicial = document.getElementById('dataInicial').value;
   let dataFinal = document.getElementById('dataFinal').value;
+  let aluno = document.getElementById('searchStudent').value;
+  let disciplina = document.getElementById('subjectFilter').value;
+
+  console.log(dataInicial, dataFinal, aluno, disciplina)
 
   if (dataInicial && dataFinal) {
     const dataInicialMoment = moment(dataInicial, 'YYYY-MM-DD');
@@ -262,7 +268,7 @@ document.getElementById('filtraRelatorio').addEventListener('click', function (e
     dataFinal = dataFinalMoment.format('YYYY/MM/DD');
 
     // Aqui você pode chamar a função que irá filtrar o relatório de faltas
-    loadAttendanceReport(dataInicial, dataFinal);
+    loadAttendanceReport(dataInicial, dataFinal, aluno, disciplina);
   } else {
     alert('Por favor, selecione as datas inicial e final');
   }
