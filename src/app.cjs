@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const axios = require('axios');
 const session = require('express-session');
-const _ = require('lodash');  // Adicione essa linha para incluir a biblioteca lodash
+const _ = require('lodash'); // Adicione essa linha para incluir a biblioteca lodash
 const app = express();
 
 app.use(express.json());
@@ -36,14 +36,7 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Função de sanitização
-function sanitizeData(data) {
-  return _.transform(data, function(result, value, key) {
-    if (!_.isFunction(value)) {
-      result[key] = value;
-    }
-  });
-}
+
 
 async function authenticate(email, senha) {
   try {
@@ -73,7 +66,7 @@ async function getUserDataByEmail(email, token) {
 
 
     const userData = response.data;
-    console.log("userData:", userData);  // Adicionado console.log para verificar o valor de userData
+    console.log("userData:", userData); // Adicionado console.log para verificar o valor de userData
     console.log('Token de Acesso: ', token);
     return userData;
   } catch (error) {
@@ -84,25 +77,25 @@ async function getUserDataByEmail(email, token) {
 
 async function getAulasList(token, userId) {
   try {
-      const response = await axios.get('http://191.101.71.67:8080/sistema/v1/lista_aulas', {
-          headers: {
-              'Authorization': `Bearer ${token}`
-          },
-          params: {
-              idProfessor: userId
-          }
-      });
+    const response = await axios.get('http://191.101.71.67:8080/sistema/v1/lista_aulas', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      params: {
+        idProfessor: userId
+      }
+    });
 
-      if (!response.data || response.data.length === 0) {
-        console.log('Não há aulas hoje');
-          // Retorna um objeto especial quando não há aulas
-          return 'Não há aulas hoje';
-          } else {
-            console.log('Dados Aulas: ', response.data);
-            return response.data;
-          }
-    } catch (error) {
-      console.error(error);
+    if (!response.data || response.data.length === 0) {
+      console.log('Não há aulas hoje');
+      // Retorna um objeto especial quando não há aulas
+      return 'Não há aulas hoje';
+    } else {
+      console.log('Dados Aulas: ', response.data);
+      return response.data;
+    }
+  } catch (error) {
+    console.error(error);
   }
 }
 
@@ -113,7 +106,7 @@ async function getAlunosList(token, id_aula) {
         'Authorization': `Bearer ${token}`
       },
       params: {
-        idAula:id_aula
+        idAula: id_aula
       }
     });
 
@@ -131,6 +124,54 @@ async function getAlunosList(token, id_aula) {
   }
 }
 
+async function getAttendanceReport(token, dataInicial, dataFinal) {
+  try {
+    const response = await axios.get('http://191.101.71.67:8080/sistema/v1/gerar_relatorios', {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      params: {
+        dataInicial,
+        dataFinal
+      },
+    });
+
+    if (!response.data || response.data.length === 0) {
+      console.log('Não há relatório de presença');
+      // Retorna um array vazio quando não há relatório
+      return [];
+    } else {
+      console.log('Dados do Relatório: ', response.data);
+      return response.data;
+    }
+  } catch (error) {
+    console.error('Erro ao buscar relatório de presença:', error);
+    return [];
+  }
+}
+
+
+app.get('/attendance_report', async (req, res) => {
+  if (req.session.authData) {
+    const {
+      token
+    } = req.session.authData;
+    const {
+      dataInicial,
+      dataFinal
+    } = req.query;
+
+    try {
+      const reportData = await getAttendanceReport(token, dataInicial, dataFinal);
+      res.json(reportData);
+    } catch (error) {
+      console.error('Erro ao buscar relatório de presença:', error);
+      res.sendStatus(500);
+    }
+  } else {
+    res.sendStatus(401);
+  }
+});
 
 
 
@@ -177,16 +218,19 @@ app.post('/login', async (req, res) => {
 
 app.get('/mainpage', async (req, res) => {
   if (req.session.authData) {
-    const { email, token } = req.session.authData;
+    const {
+      email,
+      token
+    } = req.session.authData;
     const selectedAulaId = req.session.selectedAulaId;
-    
+
     if (!token) {
       console.error('Token inválido:', token);
       return res.status(401).send('Token inválido');
     }
-    
+
     const userData = await getUserDataByEmail(email, token);
-    
+
     if (!userData || !userData.professor_id) {
       console.error('Dados de usuário inválidos:', userData);
       return res.status(500).send('Não foi possível obter os dados do usuário');
@@ -200,7 +244,7 @@ app.get('/mainpage', async (req, res) => {
       if (selectedAulaId) {
         alunos = await getAlunosList(token, selectedAulaId);
       }
-      
+
       // Verifica se `aulas` é um array
       if (Array.isArray(aulas)) {
         const aulasFiltradas = aulas.filter(aula => !aula.confirmacao);
@@ -231,6 +275,7 @@ app.get('/mainpage', async (req, res) => {
 
 
 
+
 app.post('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/login');
@@ -241,7 +286,9 @@ app.post('/setSelectedAula', async (req, res) => {
   req.session.selectedAulaId = id_aula;
 
   if (req.session.authData) {
-    const { token } = req.session.authData;
+    const {
+      token
+    } = req.session.authData;
 
     try {
       const alunos = await getAlunosList(token, id_aula);
@@ -261,13 +308,20 @@ app.post('/registraPresenca', async (req, res) => {
     return;
   }
 
-  const { token } = req.session.authData;
-  
+  const {
+    token
+  } = req.session.authData;
+
   // Extrair os dados do corpo da requisição
-  const { id_aula, lista_presencas } = req.body;
+  const {
+    id_aula,
+    lista_presencas
+  } = req.body;
 
   if (!id_aula || !lista_presencas || lista_presencas.length === 0) {
-    res.status(400).json({ message: 'id_aula ou lista_presencas inválidos!' });
+    res.status(400).json({
+      message: 'id_aula ou lista_presencas inválidos!'
+    });
     return;
   }
 
@@ -287,15 +341,21 @@ app.post('/registraPresenca', async (req, res) => {
 
     // Verifique o objeto de resposta para determinar se a requisição foi bem-sucedida
     if (response.status === 201) {
-      res.status(201).json({ message: 'Presenças registradas com sucesso!' });
+      res.status(201).json({
+        message: 'Presenças registradas com sucesso!'
+      });
     } else {
       // Manipule a resposta aqui, se necessário
-      res.status(500).json({ message: 'Erro ao registrar presenças!' });
+      res.status(500).json({
+        message: 'Erro ao registrar presenças!'
+      });
     }
   } catch (error) {
     // Manipule o erro aqui, se necessário
     console.error(error);
-    res.status(500).json({ message: 'Erro ao registrar presenças!' });
+    res.status(500).json({
+      message: 'Erro ao registrar presenças!'
+    });
   }
 });
 

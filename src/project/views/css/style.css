@@ -7,6 +7,13 @@ h1 {
   font-weight: 700;
 }
 
+@media (min-width: 992px) { /* largura de tela para lg no Bootstrap */
+  .col-lg-15 {
+    flex: 0 0 auto;
+    width: 12.5%;
+  }
+}
+
 .logo {
   margin-right: 10px;
   transition: all .5s;
